@@ -1,0 +1,38 @@
+[
+  {
+    "item": "Epomaker TH80 Pro",
+    "price": "$79.99",
+    "url": "https://epomaker.com/products/epomaker-th80-pro",
+    "status": "pending_checkout"
+  },
+  {
+    "item": "Large Pepperoni Pizza from Debonairs Pizza (Lagos)",
+    "price": "N/A (Variable)",
+    "url": "https://debonairspizza.com.ng/",
+    "status": "pending_checkout"
+  },
+  {
+    "item": "GAN 356 M Magnetic Speed Cube",
+    "price": "$25.00",
+    "url": "https://www.gancube.com/products/gan356m",
+    "status": "pending_checkout"
+  },
+  {
+    "item": "Rubik's Connected Cube",
+    "price": "$50.00",
+    "url": "https://rubiks.com/product/rubiks-connected/",
+    "status": "pending_checkout"
+  },
+  {
+    "item": "GAN 13 MagLev 3x3 Speed Cube",
+    "price": "$59.99",
+    "url": "https://www.amazon.com",
+    "status": "pending_checkout"
+  },
+  {
+    "item": "GAN 356 M Speed Cube",
+    "price": "$45.00",
+    "url": "https://www.gancube.com/gan356m",
+    "status": "pending_checkout"
+  }
+]

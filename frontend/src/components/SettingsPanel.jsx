@@ -1,0 +1,352 @@
+import React, { useState } from 'react'
+import { Box, Flex, Text, Input } from '@chakra-ui/react'
+import { Settings01Icon, Key01Icon, SecurityCheckIcon, Folder01Icon } from 'hugeicons-react'
+import BackButton from './BackButton'
+
+function CustomToggle({ checked, onChange }) {
+  return (
+    <Box
+      as="button"
+      onClick={onChange}
+      w="44px"
+      h="24px"
+      borderRadius="full"
+      bg={checked ? '#18181B' : '#E4E4E7'}
+      position="relative"
+      transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+      cursor="pointer"
+      flexShrink={0}
+      _hover={{ bg: checked ? '#27272A' : '#D4D4D8' }}
+    >
+      <Box
+        position="absolute"
+        top="2px"
+        left={checked ? '22px' : '2px'}
+        w="20px"
+        h="20px"
+        bg="white"
+        borderRadius="full"
+        boxShadow="0 1px 3px rgba(0,0,0,0.1)"
+        transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+      />
+    </Box>
+  )
+}
+
+function HookToggle({ title, description, checked, onToggle }) {
+  const [isOpen, setIsOpen] = useState(false)
+  return (
+    <Box mb="8px" bg="#FAFAFA" borderRadius="md" overflow="hidden">
+      <Flex 
+        as="button" 
+        w="full" 
+        px="12px" 
+        py="10px" 
+        _hover={{ bg: '#F4F4F5' }} 
+        justify="space-between" 
+        align="center"
+        onClick={() => setIsOpen(!isOpen)}
+        transition="all 0.2s"
+      >
+        <Flex align="center" gap="8px">
+          <Text fontSize="13px" fontWeight="600" color="#18181B">{title}</Text>
+        </Flex>
+        <Box onClick={(e) => e.stopPropagation()}>
+          <CustomToggle checked={checked} onChange={onToggle} />
+        </Box>
+      </Flex>
+      {isOpen && (
+        <Box px="12px" pb="12px">
+          <Text fontSize="12px" color="#71717A" textAlign="left">{description}</Text>
+        </Box>
+      )}
+    </Box>
+  )
+}
+
+export default function SettingsPanel({ onGoBack, onOpenArtifacts, user, onSignOut }) {
+  const persona = localStorage.getItem('heccker_persona')
+
+  const handleGoogleConnect = () => {
+    if (window._googleTokenClient) {
+      window._googleTokenClient.requestAccessToken()
+    } else {
+      alert('Google services not loaded yet. Please wait a moment and try again.')
+    }
+  }
+
+  const [streamerMode, setStreamerMode] = useState(() => localStorage.getItem('heccker_streamer_mode') === 'true')
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('heccker_api_key') || '')
+  const [workspaceConnect, setWorkspaceConnect] = useState(() => localStorage.getItem('heccker_workspace_connect') === 'true')
+  const [hooks, setHooks] = useState({ git: true, read: true, write: true, extra: true })
+
+  React.useEffect(() => {
+    localStorage.setItem('heccker_streamer_mode', streamerMode)
+  }, [streamerMode])
+
+  React.useEffect(() => {
+    localStorage.setItem('heccker_api_key', apiKey)
+  }, [apiKey])
+
+  React.useEffect(() => {
+    localStorage.setItem('heccker_workspace_connect', workspaceConnect)
+  }, [workspaceConnect])
+
+  return (
+    <Flex direction="column" w="full" h="full" bg="#FAFAFA" fontFamily="'Cera Round Pro', sans-serif">
+      
+      {/* Fixed Full-Width Header */}
+      <Flex w="full" bg="#FFFFFF" borderBottom="1px solid #E4E4E7" p="16px" justify="center" flexShrink={0}>
+        <Flex maxW="600px" w="full" align="center" gap="12px">
+          <BackButton onClick={onGoBack} mb="0" />
+          <Text fontSize="20px" fontWeight="700" color="#18181B" letterSpacing="-0.02em">Configuration</Text>
+        </Flex>
+      </Flex>
+
+      {/* Scrollable Content */}
+      <Flex flex="1" overflowY="auto" justify="center" px={{ base: '16px', md: '0' }}>
+        <Flex direction="column" maxW="600px" w="full" pt="48px" pb="120px">
+        
+        {/* Header Section */}
+        <Flex direction="column" gap="4px" mb="16px">
+          <Text fontSize="14px" color="#71717A">
+            Manage your workspace preferences and security settings.
+          </Text>
+        </Flex>
+
+        <Text fontSize="12px" fontWeight="700" color="#71717A" letterSpacing="0.02em" mb="12px">General</Text>
+
+        {/* Documents Access Card */}
+        <Flex 
+          direction="column" 
+          bg="white" 
+          border="1px solid #E4E4E7" 
+          borderRadius="xl" 
+          p="20px" 
+          mb="16px"
+          boxShadow="0 1px 2px rgba(0,0,0,0.02)"
+        >
+          <Flex justify="space-between" align="center">
+            <Flex direction="column" gap="4px" pr="24px">
+              <Flex align="center" gap="8px">
+                <Box p="6px" bg="#F4F4F5" borderRadius="md">
+                  <Folder01Icon size={18} color="#18181B" strokeWidth={1.5} />
+                </Box>
+                <Text fontSize="14px" fontWeight="600" color="#18181B">
+                  Generated Documents
+                </Text>
+              </Flex>
+              <Text fontSize="13px" color="#71717A" lineHeight="1.5" mt="4px">
+                View all artifacts, reports, and code files generated by Heccker during this session.
+              </Text>
+            </Flex>
+            <Box
+              as="button"
+              onClick={onOpenArtifacts}
+              px="12px"
+              py="6px"
+              bg="#18181B"
+              color="white"
+              borderRadius="md"
+              fontSize="12px"
+              fontWeight="600"
+              whiteSpace="nowrap"
+              flexShrink={0}
+              _hover={{ bg: '#27272A' }}
+              transition="all 0.2s"
+            >
+              Open Docs
+            </Box>
+          </Flex>
+        </Flex>
+
+        {/* Streamer Mode Card */}
+        <Flex 
+          direction="column" 
+          bg="white" 
+          border="1px solid #E4E4E7" 
+          borderRadius="xl" 
+          p="20px" 
+          boxShadow="0 1px 2px rgba(0,0,0,0.02)"
+        >
+          <Flex justify="space-between" align="flex-start">
+            <Flex direction="column" gap="4px" pr="24px">
+              <Flex align="center" gap="8px">
+                <Box p="6px" bg="#F4F4F5" borderRadius="md">
+                  <Settings01Icon size={18} color="#18181B" strokeWidth={1.5} />
+                </Box>
+                <Text fontSize="14px" fontWeight="600" color="#18181B">
+                  Streamer Mode
+                </Text>
+              </Flex>
+              <Text fontSize="13px" color="#71717A" lineHeight="1.5" mt="4px">
+                Hides sensitive file paths, credentials, and API configuration logs from the screen during presentations.
+              </Text>
+            </Flex>
+            <CustomToggle checked={streamerMode} onChange={() => setStreamerMode(!streamerMode)} />
+          </Flex>
+        </Flex>
+
+        {/* Google Workspace Connect Card */}
+        <Text fontSize="12px" fontWeight="700" color="#71717A" letterSpacing="0.02em" mb="12px" mt="24px">Integrations</Text>
+        <Flex 
+          direction="column" 
+          bg="white" 
+          border="1px solid #E4E4E7" 
+          borderRadius="xl" 
+          p="20px" 
+          mb="16px"
+          boxShadow="0 1px 2px rgba(0,0,0,0.02)"
+        >
+          <Flex justify="space-between" align="flex-start">
+            <Flex direction="column" gap="4px" pr="24px">
+              <Flex align="center" gap="8px">
+                <Box p="6px" bg="#F4F4F5" borderRadius="md">
+                  <Key01Icon size={18} color="#18181B" strokeWidth={1.5} />
+                </Box>
+                <Text fontSize="14px" fontWeight="600" color="#18181B">
+                  {user ? `Logged in as ${user.name || 'Creator'}` : persona ? `Signed in as ${persona}` : "Connect Master Account"}
+                </Text>
+              </Flex>
+              <Text fontSize="13px" color="#71717A" lineHeight="1.5" mt="4px">
+                {user
+                  ? "You are securely authenticated. Your calendar is syncing with Heccker."
+                  : persona
+                    ? `Signed in as ${persona}. Connect Google to sync your real calendar — optional.`
+                    : "Connect Google to sync your calendar with Heccker."}
+              </Text>
+            </Flex>
+            {user ? (
+              <Box as="button" onClick={onSignOut} px="12px" py="6px" bg="#FEE2E2" color="#DC2626" borderRadius="md" fontSize="12px" fontWeight="600" _hover={{ bg: '#FECACA' }} transition="all 0.2s">Sign Out</Box>
+            ) : (
+              <Box
+                as="button"
+                onClick={handleGoogleConnect}
+                px="14px"
+                py="8px"
+                bg="#FFFFFF"
+                border="1px solid #DADCE0"
+                borderRadius="md"
+                fontSize="13px"
+                fontWeight="600"
+                color="#3C4043"
+                display="flex"
+                alignItems="center"
+                gap="8px"
+                flexShrink={0}
+                _hover={{ bg: '#F8F9FA', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}
+                transition="all 0.2s"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Connect Google
+              </Box>
+            )}
+          </Flex>
+        </Flex>
+
+        {/* API Key Card */}
+        <Text fontSize="12px" fontWeight="700" color="#71717A" letterSpacing="0.02em" mb="12px" mt="24px">Security & Developer</Text>
+
+        {/* Workspace Hook Allowlist Card */}
+        <Flex 
+          direction="column" 
+          bg="white" 
+          border="1px solid #E4E4E7" 
+          borderRadius="xl" 
+          p="20px" 
+          mb="16px"
+          boxShadow="0 1px 2px rgba(0,0,0,0.02)"
+        >
+          <Flex direction="column" gap="4px" mb="16px">
+            <Flex align="center" gap="8px">
+              <Box p="6px" bg="#F4F4F5" borderRadius="md">
+                <SecurityCheckIcon size={18} color="#18181B" strokeWidth={1.5} />
+              </Box>
+              <Text fontSize="14px" fontWeight="600" color="#18181B">
+                Workspace Hook Allowlist
+              </Text>
+            </Flex>
+            <Text fontSize="13px" color="#71717A" lineHeight="1.5" mt="4px">
+              Control exactly which backend functions Heccker is allowed to execute.
+            </Text>
+          </Flex>
+
+          <Flex direction="column">
+            <HookToggle 
+              title="git log, git status" 
+              description="Allows Heccker to read your local git repository history and uncommitted changes to understand project context." 
+              checked={hooks.git} 
+              onToggle={() => setHooks({...hooks, git: !hooks.git})} 
+            />
+            <HookToggle 
+              title="read_workspace_file" 
+              description="Allows Heccker to securely read files from your local workspace to analyze code and documentation." 
+              checked={hooks.read} 
+              onToggle={() => setHooks({...hooks, read: !hooks.read})} 
+            />
+            <HookToggle 
+              title="write_workspace_file" 
+              description="Allows the Engineer loop to autonomously write, edit, and save code files directly into your workspace." 
+              checked={hooks.write} 
+              onToggle={() => setHooks({...hooks, write: !hooks.write})} 
+            />
+            <HookToggle 
+              title="add_to_cart, get_schedule" 
+              description="Allows Heccker to stage items in your shopping cart and access your calendar to manage schedule events." 
+              checked={hooks.extra} 
+              onToggle={() => setHooks({...hooks, extra: !hooks.extra})} 
+            />
+          </Flex>
+        </Flex>
+
+        <Flex 
+          direction="column" 
+          bg="white" 
+          border="1px solid #E4E4E7" 
+          borderRadius="xl" 
+          p="20px" 
+          boxShadow="0 1px 2px rgba(0,0,0,0.02)"
+        >
+          <Flex direction="column" gap="16px">
+            <Flex direction="column" gap="4px">
+              <Flex align="center" gap="8px">
+                <Box p="6px" bg="#F4F4F5" borderRadius="md">
+                  <Key01Icon size={18} color="#18181B" strokeWidth={1.5} />
+                </Box>
+                <Text fontSize="14px" fontWeight="600" color="#18181B">
+                  Gemini API Key
+                </Text>
+              </Flex>
+              <Text fontSize="13px" color="#71717A" lineHeight="1.5" mt="4px">
+                Override workspace backend credentials. Leave blank to default to server-configured keys.
+              </Text>
+            </Flex>
+            <Input
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="Enter API Key (optional)"
+              size="md"
+              fontSize="14px"
+              borderRadius="lg"
+              bg="#FAFAFA"
+              borderColor="#E4E4E7"
+              _hover={{ borderColor: '#D4D4D8' }}
+              _focus={{ borderColor: '#18181B', boxShadow: 'none' }}
+            />
+          </Flex>
+        </Flex>
+
+        {/* Force bottom whitespace */}
+        <Box w="full" h="120px" flexShrink={0} />
+
+        </Flex>
+      </Flex>
+    </Flex>
+  )
+}

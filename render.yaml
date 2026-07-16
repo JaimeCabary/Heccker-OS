@@ -1,0 +1,31 @@
+# render.yaml — Heccker-OS Render Deployment
+#
+# Two services:
+#   1. heccker-api  — the FastAPI web server (free tier)
+#   2. heccker-warm — cron job that pings /health every 10 min
+#                     prevents Render free tier cold starts (~15 min sleep)
+#
+# Deploy: connect your GitHub repo to Render → "New Blueprint" → select this file.
+# Set GEMINI_API_KEY as a secret env var in the Render dashboard.
+
+services:
+  # ── Web Service ──────────────────────────────────────────────────────────
+  - type: web
+    name: heccker-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -e . fastapi uvicorn aiohttp certifi httpx requests python-dotenv
+    startCommand: uvicorn app.server:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: GEMINI_API_KEY
+        sync: false          # Set manually in Render dashboard — never commit this
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+
+

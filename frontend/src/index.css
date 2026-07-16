@@ -1,0 +1,60 @@
+/* Load Cera Round Pro Web Font directly from Hugeicons CDN for the exact look */
+
+@font-face {
+  font-family: 'Cera Round Pro';
+  src: url('https://hugeicons.com/_next/static/media/Cera_Round_Regular_Web-s.p.33ea0ab3.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cera Round Pro';
+  src: url('https://hugeicons.com/_next/static/media/Cera_Round_Medium_Web-s.p.9c136800.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cera Round Pro';
+  src: url('https://hugeicons.com/_next/static/media/Cera_Round_Bold_Web-s.p.4733e0a4.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cera Round Pro';
+  src: url('https://hugeicons.com/_next/static/media/Cera_Round_Bold_Web-s.p.4733e0a4.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base resets */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* Eliminate the iOS 300ms double-tap-to-zoom delay on ALL elements.
+     "manipulation" keeps panning + pinch-zoom but kills the tap delay. */
+  touch-action: manipulation;
+  /* Remove the grey flash iOS shows on tap */
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: 'Cera Round Pro', -apple-system, sans-serif !important;
+  background-color: #FAFAFA;
+  color: #18181B;
+  /* Prevent iOS rubber-band scroll on the body itself */
+  overscroll-behavior: none;
+}
+
+/* Restore natural scroll behaviour inside explicit scroll containers */
+[data-overflowscroll], .overflow-scroll {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
